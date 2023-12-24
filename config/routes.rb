@@ -20,6 +20,7 @@ Rails.application.routes.draw do
 
       namespace :master_data, path: "/master-data" do
         resources :authors
+        resources :categories
       end
     end
   end
