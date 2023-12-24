@@ -13,4 +13,9 @@ class Book < ApplicationRecord
   validates :category_id, presence: { message: "Category ID is required" }
   validates :genre_id, presence: { message: "Genre ID is required" }
   validates :language_id, presence: { message: "Language ID is required" }
+
+  belongs_to :author
+  belongs_to :category
+  belongs_to :genre
+  belongs_to :language
 end

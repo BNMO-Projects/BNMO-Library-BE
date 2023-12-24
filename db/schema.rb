@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_24_053100) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_24_122208) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "authors", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index "lower((name)::text)", name: "index_author_name_unique_lowercase", unique: true
+  end
 
   create_table "book", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title", null: false
@@ -25,34 +32,17 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_24_053100) do
     t.integer "current_stock", default: 0, null: false
     t.text "description"
     t.string "book_type", null: false
-    t.uuid "author_id"
-    t.uuid "category_id"
-    t.uuid "genre_id"
-    t.uuid "language_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "price"
-  end
-
-  create_table "book_author", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index "lower((name)::text)", name: "index_author_name_unique_lowercase", unique: true
-  end
-
-  create_table "book_category", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index "lower((name)::text)", name: "index_category_name_unique_lowercase", unique: true
-  end
-
-  create_table "book_genre", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index "lower((name)::text)", name: "index_genre_name_unique_lowercase", unique: true
+    t.uuid "author_id", null: false
+    t.uuid "category_id", null: false
+    t.uuid "genre_id", null: false
+    t.uuid "language_id", null: false
+    t.index ["author_id"], name: "index_book_on_author_id"
+    t.index ["category_id"], name: "index_book_on_category_id"
+    t.index ["genre_id"], name: "index_book_on_genre_id"
+    t.index ["language_id"], name: "index_book_on_language_id"
   end
 
   create_table "borrowed_book", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -67,7 +57,21 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_24_053100) do
     t.index ["book_id"], name: "index_borrowed_book_on_book_id", unique: true
   end
 
-  create_table "language", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index "lower((name)::text)", name: "index_category_name_unique_lowercase", unique: true
+  end
+
+  create_table "genres", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index "lower((name)::text)", name: "index_genre_name_unique_lowercase", unique: true
+  end
+
+  create_table "languages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -118,13 +122,13 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_24_053100) do
     t.index ["phone_number", "user_id"], name: "index_user_profile_on_phone_number_and_user_id", unique: true
   end
 
-  add_foreign_key "book", "book_author", column: "author_id"
-  add_foreign_key "book", "book_category", column: "category_id"
-  add_foreign_key "book", "book_genre", column: "genre_id"
-  add_foreign_key "book", "language"
+  add_foreign_key "book", "authors"
+  add_foreign_key "book", "categories"
+  add_foreign_key "book", "genres"
+  add_foreign_key "book", "languages"
   add_foreign_key "borrowed_book", "book"
   add_foreign_key "sold_book", "book"
   add_foreign_key "user_address", "user_profile", column: "profile_id"
-  add_foreign_key "user_profile", "language", column: "preferred_language_id"
+  add_foreign_key "user_profile", "languages", column: "preferred_language_id"
   add_foreign_key "user_profile", "user"
 end
