@@ -3,6 +3,10 @@ class ApplicationController < ActionController::API
   rescue_from ActionController::UnpermittedParameters, with: :render_invalid_parameters
   private
 
+  def render_valid_json(message, status)
+    render json: { message: message }, status: status
+  end
+
   def render_invalid_parameters(exception)
     # Triggers when an unexpected parameters presents in the request body
 
