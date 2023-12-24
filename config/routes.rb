@@ -21,6 +21,8 @@ Rails.application.routes.draw do
       namespace :master_data, path: "/master-data" do
         resources :authors
         resources :categories
+        resources :genres
+        resources :languages
       end
     end
   end

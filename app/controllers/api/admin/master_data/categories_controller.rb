@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::Admin::MasterData::CategoriesController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :render_record_not_found
 
@@ -5,7 +7,7 @@ class Api::Admin::MasterData::CategoriesController < ApplicationController
     if query_params.blank?
       categories = Category.all
     else
-      categories = Category.where("LOWER(name) LIKE ?", Category.sanitize_sql_like(query_params[:name].downcase) + "%")
+      categories = Category.where("LOWER(name) LIKE ?", "%" + Category.sanitize_sql_like(query_params[:name].downcase) + "%")
     end
 
     render json: { data: categories }, status: :ok

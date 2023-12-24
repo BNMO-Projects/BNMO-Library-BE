@@ -7,7 +7,7 @@ class Api::Admin::MasterData::AuthorsController < ApplicationController
     if query_params.blank?
       authors = Author.all
     else
-      authors = Author.where("LOWER(name) LIKE ?", Author.sanitize_sql_like(query_params[:name].downcase) + "%")
+      authors = Author.where("LOWER(name) LIKE ?", "%" + Author.sanitize_sql_like(query_params[:name].downcase) + "%")
     end
 
     render json: { data: authors }, status: :ok
