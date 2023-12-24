@@ -19,7 +19,7 @@ class Api::Admin::MasterData::GenresController < ApplicationController
   end
 
   def create
-    genre = Genre.create(name: create_params[:name])
+    genre = Genre.create(create_params)
 
     if genre.valid?
       render_valid_json("Genre created successfully", :created)

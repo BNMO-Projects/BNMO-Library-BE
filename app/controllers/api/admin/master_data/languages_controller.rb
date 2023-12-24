@@ -19,7 +19,7 @@ class Api::Admin::MasterData::LanguagesController < ApplicationController
   end
 
   def create
-    language = Language.create(name: create_params[:name])
+    language = Language.create(create_params)
 
     if language.valid?
       render_valid_json("Language created successfully", :created)

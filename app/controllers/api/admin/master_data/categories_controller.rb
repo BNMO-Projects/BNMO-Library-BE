@@ -19,7 +19,7 @@ class Api::Admin::MasterData::CategoriesController < ApplicationController
   end
 
   def create
-    category = Category.create(name: create_params[:name])
+    category = Category.create(create_params)
 
     if category.valid?
       render_valid_json("Category created successfully", :created)

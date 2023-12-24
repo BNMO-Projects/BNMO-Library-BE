@@ -19,7 +19,7 @@ class Api::Admin::MasterData::AuthorsController < ApplicationController
   end
 
   def create
-    author = Author.create(name: create_params[:name])
+    author = Author.create(create_params)
 
     if author.valid?
       render_valid_json("Author created successfully", :created)
