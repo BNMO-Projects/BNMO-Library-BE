@@ -19,7 +19,7 @@ class Api::Admin::MasterData::GenresController < ApplicationController
   end
 
   def create
-    genre = Genre.create(create_params)
+    genre = Genre.create(create_update_params)
 
     if genre.valid?
       render_valid_json("Genre created successfully", :created)
@@ -30,7 +30,7 @@ class Api::Admin::MasterData::GenresController < ApplicationController
 
   def update
     genre = Genre.find_by!(id: params[:id])
-    genre.update(update_params)
+    genre.update(create_update_params)
     render_valid_json("Genre updated successfully", :ok)
   end
 
@@ -46,11 +46,7 @@ class Api::Admin::MasterData::GenresController < ApplicationController
     params.permit(:name)
   end
 
-  def create_params
-    params.require(:data).permit(:name)
-  end
-
-  def update_params
+  def create_update_params
     params.require(:data).permit(:name)
   end
 

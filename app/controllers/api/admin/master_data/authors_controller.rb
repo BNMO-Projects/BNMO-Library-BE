@@ -19,7 +19,7 @@ class Api::Admin::MasterData::AuthorsController < ApplicationController
   end
 
   def create
-    author = Author.create(create_params)
+    author = Author.create(create_update_params)
 
     if author.valid?
       render_valid_json("Author created successfully", :created)
@@ -30,7 +30,7 @@ class Api::Admin::MasterData::AuthorsController < ApplicationController
 
   def update
     author = Author.find_by!(id: params[:id])
-    author.update(update_params)
+    author.update(create_update_params)
     render_valid_json("Author updated successfully", :ok)
   end
 
@@ -46,11 +46,7 @@ class Api::Admin::MasterData::AuthorsController < ApplicationController
     params.permit(:name)
   end
 
-  def create_params
-    params.require(:data).permit(:name)
-  end
-
-  def update_params
+  def create_update_params
     params.require(:data).permit(:name)
   end
 

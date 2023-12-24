@@ -19,7 +19,7 @@ class Api::Admin::MasterData::LanguagesController < ApplicationController
   end
 
   def create
-    language = Language.create(create_params)
+    language = Language.create(create_update_params)
 
     if language.valid?
       render_valid_json("Language created successfully", :created)
@@ -30,7 +30,7 @@ class Api::Admin::MasterData::LanguagesController < ApplicationController
 
   def update
     language = Language.find_by!(id: params[:id])
-    language.update(update_params)
+    language.update(create_update_params)
     render_valid_json("Language updated successfully", :ok)
   end
 
@@ -46,11 +46,7 @@ class Api::Admin::MasterData::LanguagesController < ApplicationController
     params.permit(:name)
   end
 
-  def create_params
-    params.require(:data).permit(:name)
-  end
-
-  def update_params
+  def create_update_params
     params.require(:data).permit(:name)
   end
 

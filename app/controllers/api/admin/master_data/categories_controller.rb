@@ -19,7 +19,7 @@ class Api::Admin::MasterData::CategoriesController < ApplicationController
   end
 
   def create
-    category = Category.create(create_params)
+    category = Category.create(create_update_params)
 
     if category.valid?
       render_valid_json("Category created successfully", :created)
@@ -30,7 +30,7 @@ class Api::Admin::MasterData::CategoriesController < ApplicationController
 
   def update
     category = Category.find_by!(id: params[:id])
-    category.update(update_params)
+    category.update(create_update_params)
     render_valid_json("Category updated successfully", :ok)
   end
 
@@ -46,11 +46,7 @@ class Api::Admin::MasterData::CategoriesController < ApplicationController
     params.permit(:name)
   end
 
-  def create_params
-    params.require(:data).permit(:name)
-  end
-
-  def update_params
+  def create_update_params
     params.require(:data).permit(:name)
   end
 
