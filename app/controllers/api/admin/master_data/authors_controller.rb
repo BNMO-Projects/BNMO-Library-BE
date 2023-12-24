@@ -5,16 +5,16 @@ class Api::Admin::MasterData::AuthorsController < ApplicationController
 
   def index
     if query_params.blank?
-      authors = Author.all
+      authors = Author.select("id, name").all
     else
-      authors = Author.where("LOWER(name) LIKE ?", "%" + Author.sanitize_sql_like(query_params[:name].downcase) + "%")
+      authors = Author.select("id, name").where("LOWER(name) LIKE ?", "%" + Author.sanitize_sql_like(query_params[:name].downcase) + "%")
     end
 
     render json: { data: authors }, status: :ok
   end
 
   def show
-    author = Author.find_by!(id: params[:id])
+    author = Author.select("id, name").find_by!(id: params[:id])
     render json: { data: author }, status: :ok
   end
 

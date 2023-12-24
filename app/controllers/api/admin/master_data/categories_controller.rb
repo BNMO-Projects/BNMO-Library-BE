@@ -5,16 +5,16 @@ class Api::Admin::MasterData::CategoriesController < ApplicationController
 
   def index
     if query_params.blank?
-      categories = Category.all
+      categories = Category.select("id, name").all
     else
-      categories = Category.where("LOWER(name) LIKE ?", "%" + Category.sanitize_sql_like(query_params[:name].downcase) + "%")
+      categories = Category.select("id, name").where("LOWER(name) LIKE ?", "%" + Category.sanitize_sql_like(query_params[:name].downcase) + "%")
     end
 
     render json: { data: categories }, status: :ok
   end
 
   def show
-    category = Category.find_by!(id: params[:id])
+    category = Category.select("id, name").find_by!(id: params[:id])
     render json: { data: category }, status: :ok
   end
 

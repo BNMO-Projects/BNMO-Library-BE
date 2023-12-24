@@ -5,16 +5,16 @@ class Api::Admin::MasterData::LanguagesController < ApplicationController
 
   def index
     if query_params.blank?
-      languages = Language.all
+      languages = Language.select("id, name").all
     else
-      languages = Language.where("LOWER(name) LIKE ?", "%" + Language.sanitize_sql_like(query_params[:name].downcase) + "%")
+      languages = Language.select("id, name").where("LOWER(name) LIKE ?", "%" + Language.sanitize_sql_like(query_params[:name].downcase) + "%")
     end
 
     render json: { data: languages }, status: :ok
   end
 
   def show
-    language = Language.find_by!(id: params[:id])
+    language = Language.select("id, name").find_by!(id: params[:id])
     render json: { data: language }, status: :ok
   end
 
