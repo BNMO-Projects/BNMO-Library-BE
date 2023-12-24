@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_23_095219) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_23_155655) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -24,13 +24,14 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_23_095219) do
     t.integer "original_stock", default: 0, null: false
     t.integer "current_stock", default: 0, null: false
     t.text "description"
-    t.string "type", null: false
+    t.string "book_type", null: false
     t.uuid "author_id"
     t.uuid "category_id"
     t.uuid "genre_id"
     t.uuid "language_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "price"
   end
 
   create_table "book_author", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

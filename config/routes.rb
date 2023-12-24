@@ -15,7 +15,8 @@ Rails.application.routes.draw do
       post :register, to: "register#create"
     end
 
-    
-
+    namespace :admin do
+      resources :book_management, path: "/book-management"
+    end
   end
 end
