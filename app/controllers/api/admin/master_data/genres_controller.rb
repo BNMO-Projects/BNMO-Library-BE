@@ -22,7 +22,7 @@ class Api::Admin::MasterData::GenresController < ApplicationController
     genre = Genre.create(create_update_params)
 
     if genre.valid?
-      render_valid_json("Genre created successfully", :created)
+      render_valid_create("Genre")
     else
       render json: { message: "Failed to create genre", error: genre.errors }, status: :unprocessable_entity
     end
@@ -31,13 +31,13 @@ class Api::Admin::MasterData::GenresController < ApplicationController
   def update
     genre = Genre.find_by!(id: params[:id])
     genre.update(create_update_params)
-    render_valid_json("Genre updated successfully", :ok)
+    render_valid_update("Genre")
   end
 
   def destroy
     genre = Genre.find_by!(id: params[:id])
     genre.destroy
-    render_valid_json("Genre deleted successfully", :ok)
+    render_valid_delete("Genre")
   end
 
   private

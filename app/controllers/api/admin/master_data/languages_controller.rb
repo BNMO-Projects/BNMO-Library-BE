@@ -22,7 +22,7 @@ class Api::Admin::MasterData::LanguagesController < ApplicationController
     language = Language.create(create_update_params)
 
     if language.valid?
-      render_valid_json("Language created successfully", :created)
+      render_valid_create("Language")
     else
       render json: { message: "Failed to create language", error: language.errors }, status: :unprocessable_entity
     end
@@ -31,13 +31,13 @@ class Api::Admin::MasterData::LanguagesController < ApplicationController
   def update
     language = Language.find_by!(id: params[:id])
     language.update(create_update_params)
-    render_valid_json("Language updated successfully", :ok)
+    render_valid_update("Language")
   end
 
   def destroy
     language = Language.find_by!(id: params[:id])
     language.destroy
-    render_valid_json("Language deleted successfully", :ok)
+    render_valid_delete("Language")
   end
 
   private

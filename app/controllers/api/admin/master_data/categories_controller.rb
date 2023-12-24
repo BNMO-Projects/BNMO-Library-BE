@@ -22,7 +22,7 @@ class Api::Admin::MasterData::CategoriesController < ApplicationController
     category = Category.create(create_update_params)
 
     if category.valid?
-      render_valid_json("Category created successfully", :created)
+      render_valid_create("Category")
     else
       render json: { message: "Failed to create category", error: category.errors }, status: :unprocessable_entity
     end
@@ -31,13 +31,13 @@ class Api::Admin::MasterData::CategoriesController < ApplicationController
   def update
     category = Category.find_by!(id: params[:id])
     category.update(create_update_params)
-    render_valid_json("Category updated successfully", :ok)
+    render_valid_update("Category")
   end
 
   def destroy
     category = Category.find_by!(id: params[:id])
     category.destroy
-    render_valid_json("Category deleted successfully", :ok)
+    render_valid_delete("Category")
   end
 
   private

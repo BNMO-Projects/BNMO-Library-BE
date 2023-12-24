@@ -22,7 +22,7 @@ class Api::Admin::MasterData::AuthorsController < ApplicationController
     author = Author.create(create_update_params)
 
     if author.valid?
-      render_valid_json("Author created successfully", :created)
+      render_valid_create("Author")
     else
       render json: { message: "Failed to create author", error: author.errors }, status: :unprocessable_entity
     end
@@ -31,13 +31,13 @@ class Api::Admin::MasterData::AuthorsController < ApplicationController
   def update
     author = Author.find_by!(id: params[:id])
     author.update(create_update_params)
-    render_valid_json("Author updated successfully", :ok)
+    render_valid_update("Author")
   end
 
   def destroy
     author = Author.find_by!(id: params[:id])
     author.destroy
-    render_valid_json("Author deleted successfully", :ok)
+    render_valid_delete("Author")
   end
 
   private

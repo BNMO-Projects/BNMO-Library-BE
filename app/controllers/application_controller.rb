@@ -3,8 +3,16 @@ class ApplicationController < ActionController::API
   rescue_from ActionController::UnpermittedParameters, with: :render_invalid_parameters
   private
 
-  def render_valid_json(message, status)
-    render json: { message: message }, status: status
+  def render_valid_create(item)
+    render json: { message: "#{item} created successfully" }, status: :created
+  end
+
+  def render_valid_update(item)
+    render json: { message: "#{item} updated successfully" }, status: :ok
+  end
+
+  def render_valid_delete(item)
+    render json: { message: "#{item} deleted successfully" }, status: :ok
   end
 
   def render_invalid_parameters(exception)
