@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Book < ApplicationRecord
   self.table_name = "book"
 
