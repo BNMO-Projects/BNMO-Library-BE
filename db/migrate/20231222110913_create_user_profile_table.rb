@@ -6,7 +6,6 @@ class CreateUserProfileTable < ActiveRecord::Migration[7.1]
       t.string :phone_number
       t.string :gender
       t.date :date_of_birth
-      t.belongs_to :users, foreign_key: true, index: true, type: :uuid
       t.timestamps
     end
 

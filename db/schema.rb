@@ -105,7 +105,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_24_053100) do
     t.string "phone_number"
     t.string "gender"
     t.date "date_of_birth"
-    t.uuid "users_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
@@ -113,7 +112,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_24_053100) do
     t.index ["language_id"], name: "index_user_profiles_on_language_id"
     t.index ["phone_number"], name: "index_user_profiles_on_phone_number", unique: true
     t.index ["user_id"], name: "index_user_profiles_on_user_id", unique: true
-    t.index ["users_id"], name: "index_user_profiles_on_users_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -135,5 +133,4 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_24_053100) do
   add_foreign_key "user_addresses", "user_profiles"
   add_foreign_key "user_profiles", "languages"
   add_foreign_key "user_profiles", "users"
-  add_foreign_key "user_profiles", "users", column: "users_id"
 end
