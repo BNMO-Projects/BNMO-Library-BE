@@ -11,11 +11,19 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :auth do
       # Authentication routes
-      post :login, to: "login#create"
-      post :register, to: "register#create"
+      resources :login, only: [:create]
+      resources :register, only: [:create]
     end
 
-    
+    namespace :admin do
+      resources :book_management, path: "/book-management"
 
+      namespace :master_data, path: "/master-data" do
+        resources :authors
+        resources :categories
+        resources :genres
+        resources :languages
+      end
+    end
   end
 end
