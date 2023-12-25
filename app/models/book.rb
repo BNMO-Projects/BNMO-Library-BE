@@ -16,4 +16,7 @@ class Book < ApplicationRecord
   belongs_to :category
   belongs_to :genre
   belongs_to :language
+
+  has_many :borrowed_books
+  has_many :sold_books
 end
