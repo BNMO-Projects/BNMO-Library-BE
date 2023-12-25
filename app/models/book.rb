@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Book < ApplicationRecord
-  self.table_name = "book"
-
   validates :title, presence: { message: "Title is required" }
   validates :publication_year, presence: { message: "Publication year is required" }
   validates :isbn, presence: { message: "ISBN is required" }, uniqueness: { message: "ISBN already exists" }

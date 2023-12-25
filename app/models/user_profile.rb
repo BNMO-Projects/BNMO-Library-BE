@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class UserProfile < ApplicationRecord
-  self.table_name = "user_profile"
-
   validates :first_name, presence: { message: "First name is required" }
+
+  belongs_to :user
+  has_one :user_address
 end
