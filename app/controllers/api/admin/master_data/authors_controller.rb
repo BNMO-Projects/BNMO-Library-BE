@@ -24,7 +24,7 @@ class Api::Admin::MasterData::AuthorsController < ApplicationController
     if author.valid?
       render_valid_create("Author")
     else
-      render json: { message: "Failed to create author", error: author.errors }, status: :unprocessable_entity
+      render json: { message: "Failed to create new author", error: author.errors }, status: :unprocessable_entity
     end
   end
 

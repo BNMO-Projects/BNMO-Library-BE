@@ -24,7 +24,7 @@ class Api::Admin::MasterData::GenresController < ApplicationController
     if genre.valid?
       render_valid_create("Genre")
     else
-      render json: { message: "Failed to create genre", error: genre.errors }, status: :unprocessable_entity
+      render json: { message: "Failed to create new genre", error: genre.errors }, status: :unprocessable_entity
     end
   end
 

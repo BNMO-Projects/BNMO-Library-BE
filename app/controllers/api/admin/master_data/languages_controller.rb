@@ -24,7 +24,7 @@ class Api::Admin::MasterData::LanguagesController < ApplicationController
     if language.valid?
       render_valid_create("Language")
     else
-      render json: { message: "Failed to create language", error: language.errors }, status: :unprocessable_entity
+      render json: { message: "Failed to create new language", error: language.errors }, status: :unprocessable_entity
     end
   end
 

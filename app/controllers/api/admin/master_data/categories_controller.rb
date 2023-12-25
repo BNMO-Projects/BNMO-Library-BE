@@ -24,7 +24,7 @@ class Api::Admin::MasterData::CategoriesController < ApplicationController
     if category.valid?
       render_valid_create("Category")
     else
-      render json: { message: "Failed to create category", error: category.errors }, status: :unprocessable_entity
+      render json: { message: "Failed to create new category", error: category.errors }, status: :unprocessable_entity
     end
   end
 
