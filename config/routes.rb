@@ -15,6 +15,8 @@ Rails.application.routes.draw do
       resources :register, only: [:create]
     end
 
+    resources :catalog, only: [:index, :show]
+
     namespace :admin do
       resources :book_management, path: "/book-management"
 
