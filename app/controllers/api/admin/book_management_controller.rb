@@ -8,18 +8,24 @@ class Api::Admin::BookManagementController < ApplicationController
     limit = query_params[:limitPerPage].to_i
     offset = (page - 1) * limit
     if required_params?(query_params)
-      books = Book.limit(limit).offset(offset).select("id, title, isbn, book_cover, original_stock, current_stock, book_type")
+      @books = Book.limit(limit).offset(offset).joins(:author).select("books.id, books.title, books.isbn, books.book_cover, books.original_stock, books.current_stock, books.book_type, authors.name AS author_name")
     else
-      books = Book
-                .limit(limit)
-                .offset(offset)
-                .includes(:author, :category, :genre, :language)
-                .where("LOWER(book.title) LIKE ?", "%" + Book.sanitize_sql_like(query_params[:searchQuery].downcase) + "%")
-                .where("LOWER(authors.name) LIKE ?", "%" + Author.sanitize_sql_like(query_params[:authorQuery].downcase) + "%" if query_params[:searchQuery].present?)
-                .select("id, title, isbn, book_cover, original_stock, current_stock, book_type")
+      if query_params[:currentPage].present? && query_params[:limitPerPage].present?
+        # Search queries with 5 possible options
+        # Case-insensitive search for book title or author name
+        # Equal search for category, genre, and language
+        @books = Book.limit(limit).offset(offset).joins(:author, :category, :genre, :language).select("books.id, books.title, books.isbn, books.book_cover, books.original_stock, books.current_stock, books.book_type, authors.name AS author_name")
+        @books = @books.where("LOWER(books.title) LIKE ?", "%" + Book.sanitize_sql_like(query_params[:searchQuery].downcase) + "%") unless query_params[:searchQuery].blank?
+        @books = @books.where("LOWER(authors.name) LIKE ?", "%" + Author.sanitize_sql_like(query_params[:authorQuery].downcase) + "%") unless query_params[:authorQuery].blank?
+        @books = @books.where("LOWER(categories.name) = ?", Category.sanitize_sql_like(query_params[:category].downcase)) unless query_params[:category].blank?
+        @books = @books.where("LOWER(genres.name) = ?", Genre.sanitize_sql_like(query_params[:genre].downcase)) unless query_params[:genre].blank?
+        @books = @books.where("LOWER(languages.name) = ?", Language.sanitize_sql_like(query_params[:language].downcase)) unless query_params[:language].blank?
+      else
+        return render json: { message: "Invalid parameters. currentPage or limitPerPage is missing" }, status: :unprocessable_entity
+      end
     end
 
-    render json: { data: books }, status: :ok
+    render json: { data: @books }, status: :ok
   end
 
   def show
@@ -59,7 +65,7 @@ class Api::Admin::BookManagementController < ApplicationController
   private
 
   def query_params
-    params.permit(:currentPage, :limitPerPage, :bookType, :searchQuery, :authorQuery, :categoryId, :genreId, :languageId)
+    params.permit(:currentPage, :limitPerPage, :bookType, :searchQuery, :authorQuery, :category, :genre, :language)
   end
 
   def create_update_params
