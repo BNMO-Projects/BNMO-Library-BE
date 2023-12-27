@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Api::Admin::MasterData::GenresController < ApplicationController
+  before_action :authenticate_admin
   rescue_from ActiveRecord::RecordNotFound, with: :render_record_not_found
 
   def index

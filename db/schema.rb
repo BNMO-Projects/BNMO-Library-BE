@@ -108,7 +108,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_24_053100) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
-    t.uuid "language_id", null: false
+    t.uuid "language_id"
     t.index ["language_id"], name: "index_user_profiles_on_language_id"
     t.index ["phone_number"], name: "index_user_profiles_on_phone_number", unique: true
     t.index ["user_id"], name: "index_user_profiles_on_user_id", unique: true

@@ -38,7 +38,7 @@ class Api::CatalogController < ApplicationController
   end
 
   def show
-    book = Book.find_by(id: params[:id])
+    book = Book.find_by!(id: params[:id])
     book = preprocess_book_output(book)
 
     render json: { data: book }, status: :ok

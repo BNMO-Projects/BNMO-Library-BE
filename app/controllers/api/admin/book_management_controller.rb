@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Api::Admin::BookManagementController < ApplicationController
+  before_action :authenticate_admin
   rescue_from ActiveRecord::RecordNotFound, with: :render_record_not_found
 
   def index
@@ -38,7 +39,7 @@ class Api::Admin::BookManagementController < ApplicationController
   end
 
   def show
-    book = Book.find_by(id: params[:id])
+    book = Book.find_by!(id: params[:id])
     book = preprocess_book_output(book)
 
     render json: { data: book }, status: :ok
@@ -55,7 +56,7 @@ class Api::Admin::BookManagementController < ApplicationController
   end
 
   def update
-    book = Book.find_by(id: params[:id])
+    book = Book.find_by!(id: params[:id])
     book.update(create_update_params)
 
     if book.valid?
