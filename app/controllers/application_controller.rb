@@ -28,7 +28,7 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate_admin
-    if @role == "CUSTOMER"
+    unless @role == "ADMIN"
       render json: { message: "Access denied" }, status: :forbidden
     end
   end
