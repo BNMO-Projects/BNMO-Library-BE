@@ -20,6 +20,6 @@ class CreateMasterDataTables < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_reference :user_profiles, :language,foreign_key: true, type: :uuid, null: false
+    add_reference :user_profiles, :language,foreign_key: true, type: :uuid
   end
 end
