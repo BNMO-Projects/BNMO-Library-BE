@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       # Authentication routes
       resources :login, only: [:create]
       resources :register, only: [:create]
+      resources :refresh_token, path: "/refresh-token", only: [:create]
     end
 
     resources :catalog, only: [:index, :show]

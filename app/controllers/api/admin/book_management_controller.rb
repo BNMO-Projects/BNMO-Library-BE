@@ -1,35 +1,45 @@
 # frozen_string_literal: true
 
 class Api::Admin::BookManagementController < ApplicationController
+  before_action :authenticate_admin
   rescue_from ActiveRecord::RecordNotFound, with: :render_record_not_found
 
   def index
     page = query_params[:currentPage].to_i
     limit = query_params[:limitPerPage].to_i
     offset = (page - 1) * limit
+
+    base_query = Book.joins(:author)
+
     if required_params?(query_params)
-      @books = Book.limit(limit).offset(offset).joins(:author).select("books.id, books.title, books.isbn, books.book_cover, books.original_stock, books.current_stock, books.book_type, authors.name AS author_name")
+      base_query = base_query
     else
       if query_params[:currentPage].present? && query_params[:limitPerPage].present?
         # Search queries with 5 possible options
         # Case-insensitive search for book title or author name
         # Equal search for category, genre, and language
-        @books = Book.limit(limit).offset(offset).joins(:author, :category, :genre, :language).select("books.id, books.title, books.isbn, books.book_cover, books.original_stock, books.current_stock, books.book_type, authors.name AS author_name")
-        @books = @books.where("LOWER(books.title) LIKE ?", "%" + Book.sanitize_sql_like(query_params[:searchQuery].downcase) + "%") unless query_params[:searchQuery].blank?
-        @books = @books.where("LOWER(authors.name) LIKE ?", "%" + Author.sanitize_sql_like(query_params[:authorQuery].downcase) + "%") unless query_params[:authorQuery].blank?
-        @books = @books.where("LOWER(categories.name) = ?", Category.sanitize_sql_like(query_params[:category].downcase)) unless query_params[:category].blank?
-        @books = @books.where("LOWER(genres.name) = ?", Genre.sanitize_sql_like(query_params[:genre].downcase)) unless query_params[:genre].blank?
-        @books = @books.where("LOWER(languages.name) = ?", Language.sanitize_sql_like(query_params[:language].downcase)) unless query_params[:language].blank?
+        base_query = base_query.joins(:category, :genre, :language)
+        base_query = base_query.where("LOWER(books.title) LIKE ?", "%" + Book.sanitize_sql_like(query_params[:searchQuery].downcase) + "%") unless query_params[:searchQuery].blank?
+        base_query = base_query.where("LOWER(authors.name) LIKE ?", "%" + Author.sanitize_sql_like(query_params[:authorQuery].downcase) + "%") unless query_params[:authorQuery].blank?
+        base_query = base_query.where("LOWER(categories.name) = ?", Category.sanitize_sql_like(query_params[:category].downcase)) unless query_params[:category].blank?
+        base_query = base_query.where("LOWER(genres.name) = ?", Genre.sanitize_sql_like(query_params[:genre].downcase)) unless query_params[:genre].blank?
+        base_query = base_query.where("LOWER(languages.name) = ?", Language.sanitize_sql_like(query_params[:language].downcase)) unless query_params[:language].blank?
       else
         return render json: { message: "Invalid parameters. currentPage or limitPerPage is missing" }, status: :unprocessable_entity
       end
     end
 
-    render json: { data: @books }, status: :ok
+    @books = base_query.limit(limit).offset(offset).select("books.id, books.title, books.isbn, books.book_cover, books.original_stock, books.current_stock, books.book_type, authors.name AS author_name")
+
+    total = base_query.count
+    total_page = (total.to_f / limit).ceil
+    metadata = { total: total, page: page, totalPage: total_page }
+
+    render json: { data: @books, metadata: metadata }, status: :ok
   end
 
   def show
-    book = Book.find_by(id: params[:id])
+    book = Book.find_by!(id: params[:id])
     book = preprocess_book_output(book)
 
     render json: { data: book }, status: :ok
@@ -46,7 +56,7 @@ class Api::Admin::BookManagementController < ApplicationController
   end
 
   def update
-    book = Book.find_by(id: params[:id])
+    book = Book.find_by!(id: params[:id])
     book.update(create_update_params)
 
     if book.valid?
