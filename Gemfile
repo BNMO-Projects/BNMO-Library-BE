@@ -38,8 +38,8 @@ gem "rack-cors"
 # JWT gem
 gem 'jwt'
 
-# Dotenv
-gem 'dotenv-rails', groups: :development
+# Faker
+gem 'faker'
 
 # Dotenv
 gem 'dotenv-rails', groups: :development
