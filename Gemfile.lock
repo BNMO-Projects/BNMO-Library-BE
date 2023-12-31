@@ -213,6 +213,7 @@ DEPENDENCIES
   bootsnap
   debug
   dotenv-rails
+  faker
   jwt
   listen
   pg (~> 1.1)
