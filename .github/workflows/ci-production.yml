@@ -27,15 +27,15 @@ jobs:
 
       - name: Build image
         working-directory: ./
-        run: docker build . --file Dockerfile --tag ${{ secrets.GCP_REPO_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/bnmo-projects-repo/bnmo-library-customer
+        run: docker build . --file Dockerfile --tag ${{ secrets.GCP_REPO_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/bnmo-projects-repo/bnmo-library-be
 
       - name: Push image
-        run: docker push ${{ secrets.GCP_REPO_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/bnmo-projects-repo/bnmo-library-customer
+        run: docker push ${{ secrets.GCP_REPO_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/bnmo-projects-repo/bnmo-library-be
 
       - name: Deploy image to Google Cloud Run
         run: |
-          gcloud run deploy bnmo-library-customer \
-            --image ${{ secrets.GCP_REPO_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/bnmo-projects-repo/bnmo-library-customer:latest \
+          gcloud run deploy bnmo-library-be \
+            --image ${{ secrets.GCP_REPO_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/bnmo-projects-repo/bnmo-library-be:latest \
             --platform managed \
             --region ${{ secrets.GCP_CLOUD_RUN_REGION }} \
             --allow-unauthenticated \
