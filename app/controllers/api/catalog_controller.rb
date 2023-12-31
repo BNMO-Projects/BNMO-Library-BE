@@ -13,7 +13,7 @@ class Api::CatalogController < ApplicationController
     if required_params?(query_params)
       base_query = base_query
     else
-      if query_params[:currentPage].present? && query_params[:limitPerPage].present?
+      if query_params[:currentPage].present? && query_params[:limitPerPage].present? && query_params[:bookType].present?
         # Search queries with 5 possible options
         # Case-insensitive search for book title or author name
         # Equal search for category, genre, and language
@@ -23,8 +23,9 @@ class Api::CatalogController < ApplicationController
         base_query = base_query.where("LOWER(categories.name) = ?", Category.sanitize_sql_like(query_params[:category].downcase)) unless query_params[:category].blank?
         base_query = base_query.where("LOWER(genres.name) = ?", Genre.sanitize_sql_like(query_params[:genre].downcase)) unless query_params[:genre].blank?
         base_query = base_query.where("LOWER(languages.name) = ?", Language.sanitize_sql_like(query_params[:language].downcase)) unless query_params[:language].blank?
+        base_query = base_query.where("book_type = ?", Book.sanitize_sql_like(query_params[:bookType])) unless query_params[:bookType] === "ALL"
       else
-        return render json: { message: "Invalid parameters. currentPage or limitPerPage is missing" }, status: :unprocessable_entity
+        return render json: { message: "Invalid parameters. currentPage, limitPerPage, or bookType is missing" }, status: :unprocessable_entity
       end
     end
 
@@ -56,7 +57,7 @@ class Api::CatalogController < ApplicationController
   end
 
   def required_params?(object)
-    expected_keys = %w[currentPage limitPerPage]
+    expected_keys = %w[currentPage limitPerPage bookType]
 
     return false unless object.is_a?(ActionController::Parameters)
 

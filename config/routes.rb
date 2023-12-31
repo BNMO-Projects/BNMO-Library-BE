@@ -17,6 +17,11 @@ Rails.application.routes.draw do
     end
 
     resources :catalog, only: [:index, :show]
+    namespace :catalog_metadata, path: "/catalog-metadata" do
+      resources :categories, only: [:index]
+      resources :genres, only: [:index]
+      resources :languages, only: [:index]
+    end
 
     namespace :admin do
       resources :book_management, path: "/book-management"
