@@ -87,4 +87,9 @@ test:
 #
 production:
   <<: *default
-  url: <%= ENV["PRODUCTION_DATABASE_URL"] %>
+  database: postgres
+  username: postgres
+  password: <%= ENV["PRODUCTION_DATABASE_PASSWORD"] %>
+  host: db.exzvkaxqcnaqxulzgzwp.supabase.co
+  post: 5432
+  schema_search_path: public
