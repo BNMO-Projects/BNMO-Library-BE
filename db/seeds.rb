@@ -8,9 +8,9 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-# Generate 10 author
-(1..10).each do
-  Author.create!(name: Faker::Book.author)
+# Generate 20 author
+(1..20).each do
+  Author.create!(name: Faker::Book.unique.author)
 end
 
 categories = ["Novel", "Manga", "Magazine", "Comic Book", "Text Book", "Graphic Novel", "Light Novel"]
@@ -20,31 +20,35 @@ categories.each do |category|
 end
 
 # Generate 10 genres
-(1..7).each do
-  Genre.create!(name: Faker::Book.genre)
+(1..10).each do
+  Genre.create!(name: Faker::Book.unique.genre)
 end
 
-languages = ["Bahasa Indonesia", "English (United States)", "English (United Kingdom)", "Japanese", "Spanish", "Korean", "Portuguese", "French", "German", "Mandarin"]
-# Generate 7 languages
-languages.each do |language|
-  Language.create!(name: language)
+# Generate 10 languages
+(1..10).each do
+  Language.create!(name: Faker::Nation.unique.language)
 end
 
-# Generate 100 books
+# Generate 200 books
 types = %w[BORROWABLE ONSALE]
-(1..100).each do
+(1..200).each do
   book_type = types.sample
   original_stock = Faker::Number.within(range: 1..100)
+  price = nil
+  if book_type === "ONSALE"
+    price = Faker::Number.within(range: 10000..500000)
+  end
   Book.create!(
     title: Faker::Book.title,
     publication_year: Faker::Date.between(from: 2.years.ago.to_date, to: Date.today),
-    isbn: Faker::IDNumber.valid,
-    book_cover: "https://firebasestorage.googleapis.com/v0/b/bnmo-projects.appspot.com/o/book-cover%2F63b75e49-bb87-4499-82e8-e4b05d924201-Atomic%20Habit.jpg?alt=media&token=01eac1f5-4dcb-4df5-a882-ca23988ada0c",
-    cover_file_name: "book-cover/63b75e49-bb87-4499-82e8-e4b05d924201-Atomic Habit.jpg",
+    isbn: Faker::Code.unique.isbn(base: 13),
+    book_cover: "https://firebasestorage.googleapis.com/v0/b/bnmo-projects.appspot.com/o/book-cover%2F215583a4-71ab-484c-b4c5-547b1ab2c2e8-potter%203.jpg?alt=media&token=4593e864-05cb-47b6-863f-1baf7a51b1d1",
+    cover_file_name: "book-cover/215583a4-71ab-484c-b4c5-547b1ab2c2e8-potter 3.jpg",
     original_stock: original_stock,
     current_stock: Faker::Number.within(range: 1..original_stock),
     book_type: book_type,
-    price: Faker::Number.within(range: 10000..500000),
+    description: Faker::Lorem.paragraph(sentence_count: 30, random_sentences_to_add: 10),
+    price: price,
     author_id: Author.pluck(:id).sample,
     category_id: Category.pluck(:id).sample,
     genre_id: Genre.pluck(:id).sample,

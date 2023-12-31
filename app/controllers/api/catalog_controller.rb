@@ -29,7 +29,12 @@ class Api::CatalogController < ApplicationController
       end
     end
 
-    @books = base_query.limit(limit).offset(offset).select("books.id, books.title, books.book_cover, books.original_stock, books.current_stock, books.book_type, books.price, authors.name AS author_name")
+    if query_params[:bookType] === "ALL"
+      @books = base_query.limit(limit).offset(offset).select("books.id, books.title, books.book_cover, books.original_stock, books.current_stock, books.book_type, books.price, authors.name AS author_name")
+    else
+      @books = base_query.where("books.book_type = ?", Book.sanitize_sql_like(query_params[:bookType])).limit(limit).offset(offset).select("books.id, books.title, books.book_cover, books.original_stock, books.current_stock, books.book_type, books.price, authors.name AS author_name")
+    end
+
 
     total = base_query.count
     total_page = (total.to_f / limit).ceil
