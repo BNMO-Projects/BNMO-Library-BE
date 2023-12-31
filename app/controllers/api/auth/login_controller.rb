@@ -18,7 +18,7 @@ class Api::Auth::LoginController < ApplicationController
 
       access_token = JWT.encode(access_token_payload, ENV["JWT_ACCESS_SECRET"], "HS256", { typ: "JWT" })
       refresh_token = JWT.encode(refresh_token_payload, ENV["JWT_REFRESH_SECRET"], "HS256", { typ: "JWT" })
-      render json: { message: "Login successful", access_token: access_token, refresh_token: refresh_token }, status: :ok
+      render json: { message: "Login successful", username: user.username, access_token: access_token, refresh_token: refresh_token }, status: :ok
     else
       render_invalid_credentials
     end
