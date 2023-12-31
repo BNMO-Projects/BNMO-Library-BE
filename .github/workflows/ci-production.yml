@@ -39,6 +39,7 @@ jobs:
             --platform managed \
             --region ${{ secrets.GCP_CLOUD_RUN_REGION }} \
             --allow-unauthenticated \
+            --set-env-vars RAILS_MASTER_KEY=${{ secrets.RAILS_MASTER_KEY }} \
             --set-env-vars JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }} \
             --set-env-vars JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} \
             --set-env-vars PRODUCTION_DATABASE_PASSWORD=${{ secrets.PRODUCTION_DATABASE_PASSWORD }} \
