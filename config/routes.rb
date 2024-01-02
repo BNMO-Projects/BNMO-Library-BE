@@ -17,6 +17,9 @@ Rails.application.routes.draw do
     end
 
     resources :catalog, only: [:index, :show]
+    resources :wishlist, only: [:index, :create, :destroy]
+    resources :cart
+
     namespace :catalog_metadata, path: "/catalog-metadata" do
       resources :categories, only: [:index]
       resources :genres, only: [:index]
