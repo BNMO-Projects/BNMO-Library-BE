@@ -80,8 +80,7 @@ class Api::WishlistController < ApplicationController
     book
   end
 
-  def render_record_not_found e
-    puts e
-    render json: { message: "Book not found" }, status: :not_found
+  def render_record_not_found
+    render json: { message: "Wishlist not found" }, status: :not_found
   end
 end
