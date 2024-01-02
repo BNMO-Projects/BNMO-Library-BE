@@ -9,4 +9,6 @@ class User < ApplicationRecord
   validates :role, inclusion: %w[ADMIN CUSTOMER]
 
   has_one :user_profile
+  has_many :wishlists
+  has_one :cart
 end
