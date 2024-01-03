@@ -55,7 +55,7 @@ class Api::WishlistController < ApplicationController
   private
 
   def query_params
-    params.permit(:currentPage, :limitPerPage, :bookType, :searchQuery, :authorQuery, :category, :genre, :language)
+    params.permit(:currentPage, :limitPerPage, :bookType, :searchQuery)
   end
 
   def create_params
@@ -68,16 +68,6 @@ class Api::WishlistController < ApplicationController
     return false unless object.is_a?(ActionController::Parameters)
 
     object.keys.sort == expected_keys.sort
-  end
-
-  def preprocess_book_output(item)
-    book = item.attributes.except("author_id", "category_id", "genre_id", "language_id")
-    book["author_name"] = item.author.name
-    book["category_name"] = item.category.name
-    book["genre_name"] = item.genre.name
-    book["language_name"] = item.language.name
-
-    book
   end
 
   def render_record_not_found
