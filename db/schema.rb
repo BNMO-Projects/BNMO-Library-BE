@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_02_151130) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_02_154011) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -64,6 +64,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_02_151130) do
     t.uuid "cart_id", null: false
     t.uuid "book_id", null: false
     t.index ["book_id"], name: "index_cart_items_on_book_id"
+    t.index ["cart_id", "book_id"], name: "index_cart_items_on_cart_id_and_book_id", unique: true
     t.index ["cart_id"], name: "index_cart_items_on_cart_id"
   end
 
