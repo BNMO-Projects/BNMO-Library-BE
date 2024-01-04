@@ -9,7 +9,7 @@ class Api::Auth::RefreshTokenController < ApplicationController
       decoded = JWT.decode(create_params[:refresh_token], ENV["JWT_REFRESH_SECRET"], true, { required_claims: %w[id role exp], verify_expiration: true, algorithm: "HS256" })[0]
 
       # Build access token payload based on refresh token data
-      access_token_payload = { id: decoded[:id], role: decoded[:role], exp: Time.now.to_i + 300, token_type: "ACCESS" }
+      access_token_payload = { id: decoded["id"], role: decoded["role"], exp: Time.now.to_i + 300, token_type: "ACCESS" }
 
       # Generate new access token
       access_token = JWT.encode(access_token_payload, ENV["JWT_ACCESS_SECRET"], "HS256", { typ: "JWT" })

@@ -23,7 +23,7 @@ class Api::WishlistController < ApplicationController
     end
 
     if query_params[:bookType] === "ALL"
-      wishlists = base_query.limit(limit).offset(offset).select("wishlists.id, wishlists.created_at, books.title, books.book_cover, books.original_stock, books.current_stock, books.book_type, books.price, authors.name AS author_name")
+      wishlists = base_query.limit(limit).offset(offset).select("wishlists.id, wishlists.created_at, books.id AS book_id, books.title, books.book_cover, books.original_stock, books.current_stock, books.book_type, books.price, authors.name AS author_name")
     else
       wishlists = base_query.where("books.book_type = ?", Book.sanitize_sql_like(query_params[:bookType])).limit(limit).offset(offset).select("wishlists.id, wishlists.created_at, books.title, books.book_cover, books.original_stock, books.current_stock, books.book_type, books.price, authors.name AS author_name")
     end
