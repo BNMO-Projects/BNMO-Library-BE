@@ -18,6 +18,7 @@ class ApplicationController < ActionController::API
     begin
       decoded = JWT.decode(token, ENV["JWT_ACCESS_SECRET"], true, { required_claims: %w[id role exp], verify_expiration: true, algorithm: "HS256" })[0]
       @role = decoded["role"]
+      @user_id = decoded["id"]
     rescue JWT::ExpiredSignature
       return render json: { message: "Session expired. Please login to continue" }, status: :unauthorized
     rescue JWT::MissingRequiredClaim || JWT::InvalidSignature
