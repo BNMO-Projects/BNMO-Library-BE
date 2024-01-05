@@ -5,6 +5,7 @@ class Api::CartController < ApplicationController
 
   def index
     service = CartIndexService.new(@user_id).call
+    
     if service.success?
       render_custom_data_success(service.result.to_h)
     else
@@ -13,9 +14,13 @@ class Api::CartController < ApplicationController
   end
 
   def checkout
-    cart = Cart.where(status: "PENDING").select("carts.id").find_by(user_id: @user_id)
-    subtotal = CartItem.where(cart_id: cart.id).sum(:price)
-    render json: { subtotal: subtotal }, status: :ok
+    service = CartCheckoutService.new(@user_id).call
+
+    if service.success?
+      render_custom_data_success(service.result.to_h)
+    else
+      render_service_error("Failed to checkout cart", service.errors)
+    end
   end
 
   private
