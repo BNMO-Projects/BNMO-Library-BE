@@ -19,6 +19,8 @@ class CartItemCreateService < BaseServiceObject
       item = CartItem.new(book_id: @book_id, cart_id: cart.id, price: book.price)
 
       if item.valid?
+        book.current_stock -= 1
+        book.save
         item.save
         self.result = { item: item }
       else
