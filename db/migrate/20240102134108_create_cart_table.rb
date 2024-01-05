@@ -1,7 +1,7 @@
 class CreateCartTable < ActiveRecord::Migration[7.1]
   def change
     create_table :carts, id: :uuid do |t|
-      t.string :status, null: false, default: "PENDING"
+      t.string :status, null: false, default: "ACTIVE"
       t.timestamps
     end
 
