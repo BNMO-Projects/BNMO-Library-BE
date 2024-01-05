@@ -14,19 +14,22 @@ class Api::WishlistController < ApplicationController
   end
 
   def create
-    wishlist = Wishlist.create(book_id: create_params[:book_id], user_id: @user_id)
+    service = WishlistCreateService.new(@user_id, create_params[:book_id]).call
 
-    if wishlist.valid?
-      render_valid_create("Wishlist")
+    if service.success?
+      render_message("Book added to wishlist", status: :created)
     else
-      render json: { message: "Failed to create new wishlist", error: wishlist.errors }, status: :unprocessable_entity
+      render_service_error("Failed to add book to wishlist", service.errors)
     end
   end
-
   def destroy
-    wishlist = Wishlist.find_by!(id: params[:id])
-    wishlist.destroy
-    render_valid_delete("Wishlist")
+    service = WishlistDestroyService.new(params[:id]).call
+
+    if service.success?
+      render_custom_data_success(service.result.to_h)
+    else
+      render_service_error("Failed to remove book from wishlist", service.errors)
+    end
   end
 
   private
@@ -37,14 +40,6 @@ class Api::WishlistController < ApplicationController
 
   def create_params
     params.require(:data).permit(:book_id)
-  end
-
-  def required_params?(object)
-    expected_keys = %w[currentPage limitPerPage bookType]
-
-    return false unless object.is_a?(ActionController::Parameters)
-
-    object.keys.sort == expected_keys.sort
   end
 
   def render_record_not_found
