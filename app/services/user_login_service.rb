@@ -12,7 +12,7 @@ class UserLoginService < BaseServiceObject
     if user && user.authenticate(@login_params[:password])
       access_token = JwtService.encode_access_token(user)
       refresh_token = JwtService.encode_refresh_token(user)
-      self.result = { username: user.username, access_token: access_token, refresh_token: refresh_token }
+      self.result = { message: "Login successful", username: user.username, access_token: access_token, refresh_token: refresh_token }
     else
       self.errors = ["Invalid credentials"]
     end

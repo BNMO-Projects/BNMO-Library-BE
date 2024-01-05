@@ -8,12 +8,7 @@ class Api::Auth::LoginController < ApplicationController
     service = UserLoginService.new(login_params).call
 
     if service.success?
-      result = service.result.to_h
-      render_custom_data_success({
-                                   message: "Login successful",
-                                   username: result[:username],
-                                   access_token: result[:access_token],
-                                   refresh_token: result[:refresh_token] })
+      render_custom_data_success(service.result.to_h)
     else
       render_service_error("Failed to login", service.errors, status: :unauthorized)
     end
