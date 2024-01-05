@@ -34,16 +34,20 @@ class ApplicationController < ActionController::API
     end
   end
 
-  def render_valid_create(item)
-    render json: { message: "#{item} created successfully" }, status: :created
+  def render_action_success(message, status: :ok)
+    render json: { message: message }, status: status
   end
 
-  def render_valid_update(item)
-    render json: { message: "#{item} updated successfully" }, status: :ok
+  def render_data_success(data, status: :ok)
+    render json: { data: data }, status: status
   end
 
-  def render_valid_delete(item)
-    render json: { message: "#{item} deleted successfully" }, status: :ok
+  def render_custom_data_success(custom_object, status: :ok)
+    render json: custom_object, status: status
+  end
+
+  def render_service_error(message, errors, status: :unprocessable_entity)
+    render json: { message: message, errors: errors }, status: status
   end
 
   def render_invalid_parameters(exception)
