@@ -9,32 +9,24 @@ class ApplicationController < ActionController::API
 
   def authenticate_user
     bearer_token = request.headers["Authorization"]
+    return render json: { message: "Authorization token is required" }, status: :unauthorized if bearer_token.blank?
+    service = AuthMiddlewareService.new(bearer_token.split(" ")[1]).call
 
-    if bearer_token.blank?
-      return render json: { message: "Authorization token is required" }, status: :unauthorized
-    end
-    token = bearer_token.split(" ")[1]
-
-    begin
-      decoded = JWT.decode(token, ENV["JWT_ACCESS_SECRET"], true, { required_claims: %w[id role exp], verify_expiration: true, algorithm: "HS256" })[0]
-      @role = decoded["role"]
-      @user_id = decoded["id"]
-    rescue JWT::ExpiredSignature
-      return render json: { message: "Session expired. Please login to continue" }, status: :unauthorized
-    rescue JWT::MissingRequiredClaim || JWT::InvalidSignature
-      return render json: { message: "Token invalid. Please login to continue" }, status: :unauthorized
-    rescue StandardError => e
-      return render_standard_error(e)
+    if service.success?
+      @role = service.result.to_h[:role]
+      @user_id = service.result.to_h[:user_id]
+    else
+      render_service_error("Failed to authenticate user", service.errors, status: :unauthorized)
     end
   end
 
   def authenticate_admin
     unless @role == "ADMIN"
-      render json: { message: "Access denied" }, status: :forbidden
+      render_message("Access denied", status: :forbidden)
     end
   end
 
-  def render_action_success(message, status: :ok)
+  def render_message(message, status: :ok)
     render json: { message: message }, status: status
   end
 

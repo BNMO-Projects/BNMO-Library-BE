@@ -7,7 +7,7 @@ class Api::Auth::RegisterController < ApplicationController
     service = UserRegistrationService.new(user_params, profile_params).call
 
     if service.success?
-      render_action_success("Register successful", status: :created)
+      render_message("Register successful", status: :created)
     else
       render_service_error("Failed to register", service.errors)
     end
