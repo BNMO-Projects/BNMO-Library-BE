@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CatalogSearchService < BaseServiceObject
+class CatalogIndexService < BaseServiceObject
   def initialize(query_params)
     super()
     @query_params = query_params

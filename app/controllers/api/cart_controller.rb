@@ -5,7 +5,7 @@ class Api::CartController < ApplicationController
 
   def index
     service = CartIndexService.new(@user_id).call
-    
+
     if service.success?
       render_custom_data_success(service.result.to_h)
     else

@@ -4,7 +4,7 @@ class Api::CatalogController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :render_record_not_found
   
   def index
-    service = CatalogSearchService.new(query_params).call
+    service = CatalogIndexService.new(query_params).call
 
     if service.success?
       render_custom_data_success(service.result.to_h)
