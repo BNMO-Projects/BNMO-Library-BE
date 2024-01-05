@@ -14,9 +14,13 @@ class Api::Cart::CartItemController < ApplicationController
   end
 
   def destroy
-    item = CartItem.find_by!(id: params[:id])
-    item.destroy
-    render_valid_delete("Cart item")
+    service = CartItemDestroyService.new(params[:id]).call
+
+    if service.success?
+      render_custom_data_success(service.result.to_h)
+    else
+      render_service_error("Failed to delete cart item", service.errors)
+    end
   end
 
   private
@@ -26,6 +30,6 @@ class Api::Cart::CartItemController < ApplicationController
   end
 
   def render_record_not_found
-    render json: { message: "Cart item not found" }, status: :not_found
+    render json: { message: "Data not found" }, status: :not_found
   end
 end
