@@ -4,36 +4,13 @@ class Api::WishlistController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :render_record_not_found
 
   def index
-    page = query_params[:currentPage].to_i
-    limit = query_params[:limitPerPage].to_i
-    offset = (page - 1) * limit
+    service = WishlistIndexService.new(@user_id, query_params).call
 
-    base_query = Wishlist.joins(book: :author).where("wishlists.user_id = ?", Wishlist.sanitize_sql_like(@user_id))
-
-    if required_params?(query_params)
-      base_query = base_query
+    if service.success?
+      render_custom_data_success(service.result.to_h)
     else
-      if query_params[:currentPage].present? && query_params[:limitPerPage].present? && query_params[:bookType].present?
-        # Search queries with 1 possible option
-        # Case-insensitive search for book title
-        base_query = base_query.where("LOWER(books.title) LIKE ?", "%" + Book.sanitize_sql_like(query_params[:searchQuery].downcase) + "%") unless query_params[:searchQuery].blank?
-      else
-        return render json: { message: "Invalid parameters. currentPage, limitPerPage, or bookType is missing" }, status: :unprocessable_entity
-      end
+      render_service_error("Failed to fetch wishlist", service.errors)
     end
-
-    if query_params[:bookType] === "ALL"
-      wishlists = base_query.limit(limit).offset(offset).select("wishlists.id, wishlists.created_at, books.id AS book_id, books.title, books.book_cover, books.original_stock, books.current_stock, books.book_type, books.price, authors.name AS author_name")
-    else
-      wishlists = base_query.where("books.book_type = ?", Book.sanitize_sql_like(query_params[:bookType])).limit(limit).offset(offset).select("wishlists.id, wishlists.created_at, books.title, books.book_cover, books.original_stock, books.current_stock, books.book_type, books.price, authors.name AS author_name")
-    end
-
-
-    total = base_query.count
-    total_page = (total.to_f / limit).ceil
-    metadata = { total: total, page: page, totalPage: total_page }
-
-    render json: { data: wishlists, metadata: metadata }, status: :ok
   end
 
   def create
