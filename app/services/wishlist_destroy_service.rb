@@ -7,7 +7,7 @@ class WishlistDestroyService < BaseServiceObject
   end
 
   def call
-    item = Wishlist.find_by_id(@wishlist_id)
+    item = Wishlist.find_by_id!(@wishlist_id)
     item.destroy
 
     self.result = { message: "Book removed from wishlist" }
