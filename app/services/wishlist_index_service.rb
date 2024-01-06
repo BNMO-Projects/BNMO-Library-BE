@@ -36,7 +36,7 @@ class WishlistIndexService < BaseServiceObject
   end
 
   def filter_by_book_type(query)
-    query.where("books.book_type = ?", sanitize(@query_params[:bookType]))
+    query.where("books.book_type = ?", ActiveRecord::Base.sanitize_sql_like(@query_params[:bookType]))
   end
 
   def sanitize(value)

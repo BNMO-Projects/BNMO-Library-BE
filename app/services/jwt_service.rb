@@ -7,7 +7,7 @@ class JwtService
   end
 
   def self.encode_refresh_token(id, role)
-    payload = { id: id, role: role, exp: Time.now.to_i + 300, token_type: "REFRESH" }
+    payload = { id: id, role: role, exp: Time.now.to_i + 7 * 60 * 60 * 24, token_type: "REFRESH" }
     JWT.encode(payload, ENV["JWT_REFRESH_SECRET"], "HS256", { typ: "JWT" })
   end
 

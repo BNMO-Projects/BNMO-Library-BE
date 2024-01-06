@@ -14,7 +14,7 @@ class Api::CatalogController < ApplicationController
   end
 
   def show
-    service = CatalogDetailService.new(params[:id]).call
+    service = CatalogDetailService.new(params[:id], @user_id).call
 
     if service.success?
       render_data_success(service.result)
