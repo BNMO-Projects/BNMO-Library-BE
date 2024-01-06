@@ -19,8 +19,10 @@ Rails.application.routes.draw do
     resources :catalog, only: [:index, :show]
     resources :wishlist, only: [:index, :create, :destroy]
 
+    resources :cart, only: [:index]
+
     namespace :cart do
-      resources :cart_item, only: [:index, :create, :destroy], path: "cart-item"
+      resources :cart_item, only: [:create, :destroy], path: "cart-item"
       post "checkout", to: "checkout"
     end
 

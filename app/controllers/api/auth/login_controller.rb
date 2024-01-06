@@ -5,22 +5,12 @@ class Api::Auth::LoginController < ApplicationController
   skip_before_action :authenticate_user
 
   def create
-    # Find user based on username
-    # Encode JWT token once found
-    user = User.find_by(username: login_params[:username])
+    service = UserLoginService.new(login_params).call
 
-    if user && user.authenticate(login_params[:password])
-      # Access token expiry: 5 minutes
-      # Refresh token expiry: 7 days
-
-      access_token_payload = { id: user.id, role: user.role, exp: Time.now.to_i + 300, token_type: "ACCESS" }
-      refresh_token_payload = { id: user.id, role: user.role, exp: Time.now.to_i + (7 * 60 * 60 * 24), token_type: "REFRESH" }
-
-      access_token = JWT.encode(access_token_payload, ENV["JWT_ACCESS_SECRET"], "HS256", { typ: "JWT" })
-      refresh_token = JWT.encode(refresh_token_payload, ENV["JWT_REFRESH_SECRET"], "HS256", { typ: "JWT" })
-      render json: { message: "Login successful", username: user.username, access_token: access_token, refresh_token: refresh_token }, status: :ok
+    if service.success?
+      render_custom_data_success(service.result.to_h)
     else
-      render_invalid_credentials
+      render_service_error("Failed to login", service.errors, status: :unauthorized)
     end
   end
 
@@ -30,9 +20,5 @@ class Api::Auth::LoginController < ApplicationController
     # Allowed parameters are:
     # username, password
     params.require(:data).permit(:username, :password)
-  end
-
-  def render_invalid_credentials
-    render json: { message: "Invalid credentials" }, status: :unauthorized
   end
 end
