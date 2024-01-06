@@ -19,4 +19,7 @@ class Book < ApplicationRecord
 
   has_many :borrowed_books
   has_many :sold_books
+
+  has_many :wishlists
+  has_many :cart_items
 end

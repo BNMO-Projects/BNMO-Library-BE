@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_24_053100) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_02_154011) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -55,6 +55,25 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_24_053100) do
     t.datetime "updated_at", null: false
     t.uuid "book_id", null: false
     t.index ["book_id"], name: "index_borrowed_books_on_book_id", unique: true
+  end
+
+  create_table "cart_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "cart_id", null: false
+    t.uuid "book_id", null: false
+    t.index ["book_id"], name: "index_cart_items_on_book_id"
+    t.index ["cart_id", "book_id"], name: "index_cart_items_on_cart_id_and_book_id", unique: true
+    t.index ["cart_id"], name: "index_cart_items_on_cart_id"
+  end
+
+  create_table "carts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "status", default: "ACTIVE", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
+    t.index ["user_id"], name: "index_carts_on_user_id"
   end
 
   create_table "categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -124,13 +143,28 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_24_053100) do
     t.index ["email", "username"], name: "index_users_on_email_and_username", unique: true
   end
 
+  create_table "wishlists", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "book_id", null: false
+    t.uuid "user_id", null: false
+    t.index ["book_id"], name: "index_wishlists_on_book_id"
+    t.index ["user_id", "book_id"], name: "index_wishlists_on_user_id_and_book_id", unique: true
+    t.index ["user_id"], name: "index_wishlists_on_user_id"
+  end
+
   add_foreign_key "books", "authors"
   add_foreign_key "books", "categories"
   add_foreign_key "books", "genres"
   add_foreign_key "books", "languages"
   add_foreign_key "borrowed_books", "books"
+  add_foreign_key "cart_items", "books"
+  add_foreign_key "cart_items", "carts"
+  add_foreign_key "carts", "users"
   add_foreign_key "sold_books", "books"
   add_foreign_key "user_addresses", "user_profiles"
   add_foreign_key "user_profiles", "languages"
   add_foreign_key "user_profiles", "users"
+  add_foreign_key "wishlists", "books"
+  add_foreign_key "wishlists", "users"
 end
