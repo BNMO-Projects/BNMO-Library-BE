@@ -20,11 +20,16 @@ class WishlistIndexService < BaseServiceObject
     offset = (page - 1) * limit
 
     # Do query
-    base_query = Wishlist.joins(book: [:author, :category, :genre, :language]).where("wishlists.user_id = ?", sanitize(@user_id))
-    base_query = apply_filters(base_query)
-    books = base_query.limit(limit).offset(offset).select("wishlists.id, wishlists.created_at, books.id AS book_id, books.title, books.publication_year, books.book_cover, books.original_stock, books.current_stock, books.description, books.book_type, books.price, authors.name AS author_name, categories.name AS category_name, genres.name AS genre_name, languages.name AS language_name")
+    base_query = Wishlist.joins(book: [:author, :category, :genre, :language])
+                         .joins("LEFT JOIN carts ON carts.user_id = wishlists.user_id AND carts.status = 'ACTIVE'")
+                         .joins("LEFT JOIN cart_items ON cart_items.cart_id = carts.id AND cart_items.book_id = wishlists.book_id")
+                         .where("wishlists.user_id = ?", sanitize(@user_id))
 
-    self.result = { data: books, metadata: pagination_metadata(base_query.count, page, limit) }
+    base_query = apply_filters(base_query)
+
+    books = base_query&.limit(limit)&.offset(offset).select("wishlists.id, wishlists.created_at, books.id AS book_id, books.title, books.publication_year, books.book_cover, books.original_stock, books.current_stock, books.description, books.book_type, books.price, authors.name AS author_name, categories.name AS category_name, genres.name AS genre_name, languages.name AS language_name, cart_items.id IS NOT NULL AS in_cart, cart_items.id AS cart_item_id")
+
+    self.result = { data: books, metadata: pagination_metadata(base_query&.count, page, limit) }
 
     self
   end
