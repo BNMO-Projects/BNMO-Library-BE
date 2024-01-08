@@ -4,7 +4,7 @@ class CreateUserTable < ActiveRecord::Migration[7.1]
       t.string :email, null: false
       t.string :username, null: false
       t.string :password_digest, null: false
-      t.string :role, null: false, default: 'CUSTOMER'
+      t.string :role, null: false, default: "CUSTOMER"
       t.timestamps
     end
 

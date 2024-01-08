@@ -5,10 +5,10 @@ class CreateBorrowedBookTable < ActiveRecord::Migration[7.1]
       t.datetime :picked_up_date
       t.datetime :deadline
       t.datetime :return_date
-      t.string :status, null: false, default: 'VALIDATING'
+      t.string :status, null: false, default: "VALIDATING"
       t.timestamps
     end
 
-    add_reference :borrowed_books, :book, foreign_key: true, type: :uuid, null: false, index: { unique: true }
+    add_reference :borrowed_books, :book, foreign_key: true, type: :uuid, null: false
   end
 end
