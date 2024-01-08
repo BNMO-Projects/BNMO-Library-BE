@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_02_154011) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_08_030206) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -54,7 +54,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_02_154011) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "book_id", null: false
-    t.index ["book_id"], name: "index_borrowed_books_on_book_id", unique: true
+    t.uuid "cart_item_id", null: false
+    t.index ["book_id", "cart_item_id"], name: "index_borrowed_books_on_book_id_and_cart_item_id", unique: true
+    t.index ["book_id"], name: "index_borrowed_books_on_book_id"
+    t.index ["cart_item_id"], name: "index_borrowed_books_on_cart_item_id"
   end
 
   create_table "cart_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -63,9 +66,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_02_154011) do
     t.datetime "updated_at", null: false
     t.uuid "cart_id", null: false
     t.uuid "book_id", null: false
+    t.uuid "order_id"
     t.index ["book_id"], name: "index_cart_items_on_book_id"
-    t.index ["cart_id", "book_id"], name: "index_cart_items_on_cart_id_and_book_id", unique: true
+    t.index ["cart_id", "book_id", "order_id"], name: "index_cart_items_on_cart_id_and_book_id_and_order_id", unique: true
     t.index ["cart_id"], name: "index_cart_items_on_cart_id"
+    t.index ["order_id"], name: "index_cart_items_on_order_id"
   end
 
   create_table "carts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -97,13 +102,25 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_02_154011) do
     t.index "lower((name)::text)", name: "index_language_name_unique_lowercase", unique: true
   end
 
+  create_table "orders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "validation_code"
+    t.string "status", default: "PENDING", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
+    t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
   create_table "sold_books", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "purchase_date", null: false
     t.integer "price", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "book_id", null: false
-    t.index ["book_id"], name: "index_sold_books_on_book_id", unique: true
+    t.uuid "cart_item_id", null: false
+    t.index ["book_id", "cart_item_id"], name: "index_sold_books_on_book_id_and_cart_item_id", unique: true
+    t.index ["book_id"], name: "index_sold_books_on_book_id"
+    t.index ["cart_item_id"], name: "index_sold_books_on_cart_item_id"
   end
 
   create_table "user_addresses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -158,10 +175,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_02_154011) do
   add_foreign_key "books", "genres"
   add_foreign_key "books", "languages"
   add_foreign_key "borrowed_books", "books"
+  add_foreign_key "borrowed_books", "cart_items"
   add_foreign_key "cart_items", "books"
   add_foreign_key "cart_items", "carts"
+  add_foreign_key "cart_items", "orders"
   add_foreign_key "carts", "users"
+  add_foreign_key "orders", "users"
   add_foreign_key "sold_books", "books"
+  add_foreign_key "sold_books", "cart_items"
   add_foreign_key "user_addresses", "user_profiles"
   add_foreign_key "user_profiles", "languages"
   add_foreign_key "user_profiles", "users"
