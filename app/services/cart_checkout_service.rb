@@ -18,7 +18,10 @@ class CartCheckoutService < BaseServiceObject
       end
 
       cart.update!(status: "COMPLETED")
-      self.result = { cart: cart }
+      code = Faker::Number.unique.number(digits: 8).to_s
+      order.validation_code = code
+      order.save!
+      self.result = { message: "Checkout successful", code: code }
     end
   rescue ActiveRecord::RecordNotFound => e
     self.errors = [e.message]

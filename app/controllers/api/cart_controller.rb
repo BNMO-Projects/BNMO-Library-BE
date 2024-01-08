@@ -17,7 +17,7 @@ class Api::CartController < ApplicationController
     service = CartCheckoutService.new(@user_id).call
 
     if service.success?
-      render_message("Checkout successful")
+      render_custom_data_success(service.result.to_h)
     else
       render_service_error("Failed to checkout cart", service.errors)
     end
