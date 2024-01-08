@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'jwt'
 
 class Api::Auth::LoginController < ApplicationController
   skip_before_action :authenticate_user

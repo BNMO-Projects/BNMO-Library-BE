@@ -5,4 +5,5 @@ class CartItem < ApplicationRecord
 
   belongs_to :cart
   belongs_to :book
+  belongs_to :order, optional: true
 end

@@ -6,6 +6,6 @@ class CreateSoldBookTable < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_reference :sold_books, :book, foreign_key: true, type: :uuid, null: false, index: { unique: true }
+    add_reference :sold_books, :book, foreign_key: true, type: :uuid, null: false
   end
 end

@@ -9,7 +9,7 @@ class CartItemDestroyService < BaseServiceObject
   def call
     item = CartItem.find_by!(id: @cart_item_id)
     book = Book.find_by_id(item.book_id)
-    book.current_stock += 1
+    book.increment(:current_stock)
     book.save
 
     item.destroy
