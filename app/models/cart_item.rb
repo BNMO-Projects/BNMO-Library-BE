@@ -6,4 +6,7 @@ class CartItem < ApplicationRecord
   belongs_to :cart
   belongs_to :book
   belongs_to :order, optional: true
+
+  has_one :borrowed_book
+  has_one :sold_book
 end
