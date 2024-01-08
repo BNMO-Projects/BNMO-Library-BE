@@ -12,14 +12,14 @@ class CartItemCreateService < BaseServiceObject
     # If not found, create a new cart
     # Once cart is made, check the book stock availability
     # If available, create the cart item
-    cart = Cart.where(status: "ACTIVE").select("carts.id").find_or_create_by(user_id: @user_id)
+    cart = Cart.where(status: "ACTIVE").select("carts.id").find_or_create_by!(user_id: @user_id)
     book = Book.find_by_id!(@book_id)
 
     if book.current_stock.nonzero?
       item = CartItem.new(book_id: @book_id, cart_id: cart.id, price: book.price)
 
       if item.valid?
-        book.current_stock -= 1
+        book.decrement(:current_stock)
         book.save
         item.save
         self.result = { item: item }
