@@ -13,16 +13,16 @@ Rails.application.routes.draw do
       # Authentication routes
       resources :login, only: [:create]
       resources :register, only: [:create]
-      resources :refresh_token, path: "/refresh-token", only: [:create]
+      resources :refresh_token, only: [:create], path: "/refresh-token"
     end
 
     resources :catalog, only: [:index, :show]
     resources :wishlist, only: [:index, :create, :destroy]
+    resources :order_history, only: [:index], path: "/order-history"
 
     resources :cart, only: [:index]
-
     namespace :cart do
-      resources :cart_item, only: [:create, :destroy], path: "cart-item"
+      resources :cart_item, only: [:create, :destroy], path: "/cart-item"
       post "checkout", to: "checkout"
     end
 
