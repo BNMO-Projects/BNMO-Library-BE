@@ -21,7 +21,7 @@ class CatalogIndexService < BaseServiceObject
     # Do query
     base_query = Book.joins(:author,:category, :genre, :language)
     base_query = apply_filters(base_query)
-    books = base_query.limit(limit).offset(offset).select("books.id, books.title, books.book_cover, books.original_stock, books.current_stock, books.book_type, books.price, authors.name AS author_name")
+    books = base_query.limit(limit).offset(offset).select("books.id, books.title, books.book_cover, books.current_stock, authors.name AS author_name")
 
     self.result = { data: books, metadata: pagination_metadata(base_query.count, page, limit) }
 
